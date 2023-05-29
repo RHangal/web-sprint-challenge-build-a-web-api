@@ -32,8 +32,22 @@ function validateProject(req, res, next) {
     next();
   }
 }
+function validateUpdatedProject(req, res, next) {
+  const { completed, description, name } = req.body;
+  if (!completed || !description || !name) {
+    res.status(400).json({
+      message: "missing required text field",
+    });
+
+    req.completed = completed;
+    req.description = description.trim();
+    req.name = name.trim();
+    next();
+  }
+}
 
 module.exports = {
   validateProjectId,
   validateProject,
+  validateUpdatedProject,
 };

@@ -4,7 +4,11 @@ const express = require("express");
 
 const URL = "/projects";
 
-const { validateProjectId, validateProject } = require("./projects-middleware");
+const {
+  validateProjectId,
+  validateProject,
+  validateUpdatedProject,
+} = require("./projects-middleware");
 
 const Projects = require("./projects-model");
 
@@ -35,6 +39,23 @@ router.post(URL, validateProject, (req, res, next) => {
       res.status(200).json(newProject);
     })
     .catch(next);
+});
+
+router.put(`${URL}/:id`, validateProjectId, (req, res) => {
+  const { name, description, completed } = req.body;
+  Projects.update(req.params.id, {
+    name: name,
+    description: description,
+    completed: completed,
+  })
+    .then((updatedProject) => {
+      res.status(400).json(updatedProject);
+    })
+    .catch((err) => {
+      res.status(400).json({
+        message: err.message,
+      });
+    });
 });
 
 router.use((err, req, res, next) => {
