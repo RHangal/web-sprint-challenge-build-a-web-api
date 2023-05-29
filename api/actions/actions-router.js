@@ -37,6 +37,26 @@ router.post(URL, validateAction, (req, res, next) => {
     })
     .catch(next);
 });
+router.put(`${URL}/:id`, validateActionId, validateAction, (req, res, next) => {
+  Actions.update(req.params.id, {
+    notes: req.body.notes,
+    description: req.body.description,
+    completed: req.body.completed,
+    project_id: req.body.project_id,
+  })
+    .then((newProject) => {
+      res.status(200).json(newProject);
+    })
+    .catch(next);
+});
+
+router.delete(`${URL}/:id`, validateActionId, (req, res, next) => {
+  Actions.remove(req.params.id)
+    .then((projects) => {
+      res.status(200).json(projects);
+    })
+    .catch(next);
+});
 
 router.use((err, req, res, next) => {
   res.status(err.status || 500).json({
