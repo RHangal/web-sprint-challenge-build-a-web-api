@@ -4,11 +4,7 @@ const express = require("express");
 
 const URL = "/projects";
 
-const {
-  validateProjectId,
-  validateProject,
-  validateUpdatedProject,
-} = require("./projects-middleware");
+const { validateProjectId, validateProject } = require("./projects-middleware");
 
 const Projects = require("./projects-model");
 
@@ -56,6 +52,22 @@ router.put(`${URL}/:id`, validateProjectId, (req, res) => {
         message: err.message,
       });
     });
+});
+
+router.delete(`${URL}/:id`, validateProjectId, (req, res, next) => {
+  Projects.remove(req.params.id)
+    .then((projects) => {
+      res.status(200).json(projects);
+    })
+    .catch(next);
+});
+
+router.get(`${URL}/:id/actions`, validateProjectId, (req, res, next) => {
+  Projects.getProjectActions(req.params.id)
+    .then((projectActions) => {
+      res.status(200).json(projectActions);
+    })
+    .catch(next);
 });
 
 router.use((err, req, res, next) => {
