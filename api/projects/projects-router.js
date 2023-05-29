@@ -4,7 +4,7 @@ const express = require("express");
 
 const URL = "/projects";
 
-const { validateProjectId } = require("./projects-middleware");
+const { validateProjectId, validateProject } = require("./projects-middleware");
 
 const Projects = require("./projects-model");
 
@@ -21,6 +21,18 @@ router.get(`${URL}/:id`, validateProjectId, (req, res, next) => {
   Projects.get(req.params.id)
     .then((projects) => {
       res.status(200).json(projects);
+    })
+    .catch(next);
+});
+
+router.post(URL, validateProject, (req, res, next) => {
+  Projects.insert({
+    name: req.name,
+    description: req.description,
+    completed: req.completed,
+  })
+    .then((newProject) => {
+      res.status(200).json(newProject);
     })
     .catch(next);
 });
