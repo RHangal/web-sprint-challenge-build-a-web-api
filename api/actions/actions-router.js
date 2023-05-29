@@ -3,7 +3,7 @@ const express = require("express");
 
 const URL = "/actions";
 
-const { validateActionId } = require("./actions-middlware");
+const { validateActionId, validateAction } = require("./actions-middlware");
 
 const Actions = require("./actions-model");
 
@@ -21,6 +21,19 @@ router.get(`${URL}/:id`, validateActionId, (req, res, next) => {
   Actions.get(req.params.id)
     .then((action) => {
       res.status(200).json(action);
+    })
+    .catch(next);
+});
+
+router.post(URL, validateAction, (req, res, next) => {
+  Actions.insert({
+    notes: req.body.notes,
+    description: req.body.description,
+    completed: req.body.completed,
+    project_id: req.body.project_id,
+  })
+    .then((newProject) => {
+      res.status(200).json(newProject);
     })
     .catch(next);
 });

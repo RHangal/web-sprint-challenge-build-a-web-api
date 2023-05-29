@@ -19,6 +19,22 @@ async function validateActionId(req, res, next) {
   }
 }
 
+function validateAction(req, res, next) {
+  const { completed, description, notes, project_id } = req.body;
+  if (!description || !notes || !project_id) {
+    res.status(400).json({
+      message: "missing required text field",
+    });
+  } else {
+    req.completed = completed;
+    req.description = description.trim();
+    req.notes = notes.trim();
+    req.project_id = project_id;
+    next();
+  }
+}
+
 module.exports = {
   validateActionId,
+  validateAction,
 };
